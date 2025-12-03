@@ -5,7 +5,7 @@ import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Sparkles } from "@/components/Sparkles";
 import { PixelButton } from "@/components/PixelButton";
 import { AgentChat } from "@/components/AgentChat";
-import { Brain, Users, MessageSquare, ScrollText, Wrench, Eye, X } from "lucide-react";
+import { Brain, Users, MessageSquare, ScrollText, Wrench, Eye } from "lucide-react";
 
 const Index = () => {
   const [showChat, setShowChat] = useState(false);
@@ -226,13 +226,7 @@ const Index = () => {
       {showChat && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="relative w-full max-w-2xl h-[600px] animate-fade-up">
-            <button
-              onClick={() => setShowChat(false)}
-              className="absolute -top-12 right-0 p-2 text-white hover:text-primary transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
-            <AgentChat className="h-full" />
+            <AgentChat className="h-full" onClose={() => setShowChat(false)} />
           </div>
         </div>
       )}
