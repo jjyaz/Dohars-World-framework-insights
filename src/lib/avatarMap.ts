@@ -1,12 +1,18 @@
 // Import all available avatar assets
 import dehtyarAvatar from "@/assets/dehtyar.png";
 import dehtyarChatAvatar from "@/assets/dehtyar-chat.png";
+import doharAvatar from "@/assets/dohar.png";
+import doharChatAvatar from "@/assets/dohar-chat.png";
 
 // Map agent names to their avatar imports
 const avatarMap: Record<string, { avatar: string; chatAvatar: string }> = {
   dehtyar: {
     avatar: dehtyarAvatar,
     chatAvatar: dehtyarChatAvatar,
+  },
+  dohar: {
+    avatar: doharAvatar,
+    chatAvatar: doharChatAvatar,
   },
 };
 
