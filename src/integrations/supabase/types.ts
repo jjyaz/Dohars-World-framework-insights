@@ -303,7 +303,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      match_memories: {
+        Args: {
+          match_count?: number
+          match_threshold?: number
+          p_agent_id?: string
+          p_category?: string
+          query_embedding: string
+        }
+        Returns: {
+          content: string
+          id: string
+          importance: number
+          memory_category: string
+          memory_type: string
+          similarity: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
