@@ -129,7 +129,7 @@ export function AgentChat({ selectedAgent, className = "", onClose, onBack }: Ag
             </button>
           )}
           {agentAvatar ? (
-            <img src={agentAvatar} alt={selectedAgent.name} className="w-10 h-10 object-contain" />
+            <img src={agentAvatar} alt={selectedAgent.name} className="w-10 h-10 object-cover" />
           ) : (
             <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
               <span className="font-pixel text-lg">{selectedAgent.name.charAt(0)}</span>
@@ -173,7 +173,7 @@ export function AgentChat({ selectedAgent, className = "", onClose, onBack }: Ag
         {messages.length === 0 && (
           <div className="text-center text-muted-foreground py-8">
             {agentAvatar ? (
-              <img src={agentAvatar} alt={selectedAgent.name} className="w-24 h-24 mx-auto mb-4 opacity-80 object-contain" />
+              <img src={agentAvatar} alt={selectedAgent.name} className="w-24 h-24 mx-auto mb-4 opacity-80 object-cover" />
             ) : (
               <div className="w-24 h-24 mx-auto mb-4 bg-muted rounded-full flex items-center justify-center">
                 <span className="font-pixel text-4xl">{selectedAgent.name.charAt(0)}</span>
@@ -193,7 +193,7 @@ export function AgentChat({ selectedAgent, className = "", onClose, onBack }: Ag
             {message.role === "assistant" && (
               <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
                 {agentAvatar ? (
-                  <img src={agentAvatar} alt={selectedAgent.name} className="w-12 h-12 object-contain" />
+                  <img src={agentAvatar} alt={selectedAgent.name} className="w-12 h-12 object-cover" />
                 ) : (
                   <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                     <span className="font-pixel text-lg">{selectedAgent.name.charAt(0)}</span>
@@ -231,7 +231,7 @@ export function AgentChat({ selectedAgent, className = "", onClose, onBack }: Ag
           <div className="flex gap-3 justify-start">
             <div className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0">
               {agentAvatar ? (
-                <img src={agentAvatar} alt={selectedAgent.name} className="w-12 h-12 object-contain" />
+                <img src={agentAvatar} alt={selectedAgent.name} className="w-12 h-12 object-cover" />
               ) : (
                 <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                   <span className="font-pixel text-lg">{selectedAgent.name.charAt(0)}</span>
