@@ -1,15 +1,16 @@
 import { useState, useRef, useEffect } from "react";
 import { useAgentChat } from "@/hooks/useAgentChat";
 import { useToast } from "@/hooks/use-toast";
-import { Send, Trash2, User, Loader2 } from "lucide-react";
+import { Send, X, User, Loader2 } from "lucide-react";
 import dehtyarChat from "@/assets/dehtyar-chat.png";
 
 interface AgentChatProps {
   agentId?: string;
   className?: string;
+  onClose?: () => void;
 }
 
-export function AgentChat({ agentId, className = "" }: AgentChatProps) {
+export function AgentChat({ agentId, className = "", onClose }: AgentChatProps) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -49,13 +50,15 @@ export function AgentChat({ agentId, className = "" }: AgentChatProps) {
           <img src={dehtyarChat} alt="Dehtyar" className="w-10 h-10" />
           <span className="font-pixel text-sm text-foreground">Dehtyar Agent</span>
         </div>
-        <button
-          onClick={clearChat}
-          className="p-2 hover:bg-muted rounded-md transition-colors"
-          title="Clear chat"
-        >
-          <Trash2 className="w-4 h-4 text-muted-foreground" />
-        </button>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-muted rounded-md transition-colors"
+            title="Close chat"
+          >
+            <X className="w-5 h-5 text-muted-foreground" />
+          </button>
+        )}
       </div>
 
       {/* Messages */}
