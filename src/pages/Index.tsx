@@ -212,7 +212,7 @@ const Index = () => {
             <a href="#" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
               Documentation
             </a>
-            <a href="#" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://github.com/jjyaz/Dehtyar-framework-insights" target="_blank" rel="noopener noreferrer" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
               GitHub
             </a>
             <a href="#" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
