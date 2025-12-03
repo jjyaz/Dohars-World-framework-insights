@@ -194,10 +194,39 @@ serve(async (req) => {
         const content = toolInput.content as string;
         const memoryType = (toolInput.type as string) || "short_term";
         const importance = (toolInput.importance as number) || 0.5;
+        const category = (toolInput.category as string) || "episodic";
 
         if (!content) {
           result = "Error: No content provided to store";
           break;
+        }
+
+        // Generate embedding using Lovable AI
+        let embedding = null;
+        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+        
+        if (LOVABLE_API_KEY) {
+          try {
+            const embeddingResponse = await fetch("https://ai.gateway.lovable.dev/v1/embeddings", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                model: "text-embedding-3-small",
+                input: content
+              })
+            });
+            
+            if (embeddingResponse.ok) {
+              const embeddingData = await embeddingResponse.json();
+              embedding = embeddingData.data?.[0]?.embedding;
+              console.log("Generated embedding for memory");
+            }
+          } catch (err) {
+            console.error("Error generating embedding:", err);
+          }
         }
 
         const { error } = await supabase.from("agent_memory").insert({
@@ -205,12 +234,14 @@ serve(async (req) => {
           content,
           memory_type: memoryType,
           importance,
+          memory_category: category,
+          embedding,
         });
 
         if (error) {
           result = `Error storing memory: ${error.message}`;
         } else {
-          result = `Successfully stored ${memoryType} memory: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`;
+          result = `Successfully stored ${category} memory (${memoryType}): "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`;
         }
         break;
       }
@@ -497,8 +528,323 @@ serve(async (req) => {
         break;
       }
 
+      // === PHASE 4: ENHANCED MEMORY TOOLS ===
+      
+      case "memory_search": {
+        const query = toolInput.query as string;
+        const limit = (toolInput.limit as number) || 5;
+        const category = toolInput.category as string;
+        
+        if (!query) {
+          result = "Error: Search query is required";
+          break;
+        }
+        
+        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+        
+        // Try semantic search with embeddings first
+        if (LOVABLE_API_KEY) {
+          try {
+            // Generate embedding for the search query
+            const embeddingResponse = await fetch("https://ai.gateway.lovable.dev/v1/embeddings", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                model: "text-embedding-3-small",
+                input: query
+              })
+            });
+            
+            if (embeddingResponse.ok) {
+              const embeddingData = await embeddingResponse.json();
+              const queryEmbedding = embeddingData.data?.[0]?.embedding;
+              
+              if (queryEmbedding) {
+                // Use pgvector for similarity search
+                const { data: memories, error } = await supabase.rpc('match_memories', {
+                  query_embedding: queryEmbedding,
+                  match_threshold: 0.5,
+                  match_count: limit,
+                  p_agent_id: agentId,
+                  p_category: category || null
+                });
+                
+                if (!error && memories && memories.length > 0) {
+                  // Update access count for retrieved memories
+                  const memoryIds = memories.map((m: any) => m.id);
+                  await supabase
+                    .from("agent_memory")
+                    .update({ access_count: supabase.rpc('increment_access_count') })
+                    .in("id", memoryIds);
+                  
+                  result = "[Semantic Memory Search Results]\n" +
+                    memories.map((m: any, i: number) => 
+                      `${i + 1}. [${m.memory_category}] (similarity: ${(m.similarity * 100).toFixed(1)}%)\n   ${m.content}`
+                    ).join("\n\n");
+                  break;
+                }
+              }
+            }
+          } catch (err) {
+            console.error("Semantic search error:", err);
+          }
+        }
+        
+        // Fallback to keyword search
+        let fallbackQuery = supabase
+          .from("agent_memory")
+          .select("id, content, memory_type, memory_category, importance, created_at")
+          .eq("agent_id", agentId)
+          .ilike("content", `%${query}%`)
+          .order("importance", { ascending: false })
+          .limit(limit);
+        
+        if (category) {
+          fallbackQuery = fallbackQuery.eq("memory_category", category);
+        }
+        
+        const { data: fallbackMemories, error: fallbackError } = await fallbackQuery;
+        
+        if (fallbackError) {
+          result = `Error searching memories: ${fallbackError.message}`;
+        } else if (!fallbackMemories || fallbackMemories.length === 0) {
+          result = `No memories found matching "${query}"`;
+        } else {
+          result = "[Keyword Memory Search Results]\n" +
+            fallbackMemories.map((m, i) => 
+              `${i + 1}. [${m.memory_category}] (importance: ${m.importance})\n   ${m.content}`
+            ).join("\n\n");
+        }
+        break;
+      }
+      
+      case "memory_reflect": {
+        const topic = toolInput.topic as string;
+        const depth = (toolInput.depth as number) || 10;
+        
+        if (!topic) {
+          result = "Error: Topic is required for reflection";
+          break;
+        }
+        
+        // Get memories related to the topic
+        const { data: memories, error } = await supabase
+          .from("agent_memory")
+          .select("content, memory_category, importance, created_at")
+          .eq("agent_id", agentId)
+          .ilike("content", `%${topic}%`)
+          .order("importance", { ascending: false })
+          .limit(depth);
+        
+        if (error || !memories || memories.length === 0) {
+          result = `No memories found about "${topic}" to reflect on.`;
+          break;
+        }
+        
+        // Use Lovable AI to synthesize reflections
+        const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+        
+        if (LOVABLE_API_KEY) {
+          try {
+            const memoryContext = memories.map((m, i) => 
+              `Memory ${i + 1} [${m.memory_category}]: ${m.content}`
+            ).join("\n");
+            
+            const reflectionResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                model: "google/gemini-2.5-flash",
+                messages: [
+                  {
+                    role: "system",
+                    content: "You are a memory reflection system. Analyze the provided memories and synthesize key insights, patterns, and connections. Be concise but insightful."
+                  },
+                  {
+                    role: "user",
+                    content: `Reflect on these memories about "${topic}":\n\n${memoryContext}\n\nProvide 2-3 key insights or patterns you observe.`
+                  }
+                ]
+              })
+            });
+            
+            if (reflectionResponse.ok) {
+              const reflectionData = await reflectionResponse.json();
+              const reflection = reflectionData.choices?.[0]?.message?.content;
+              
+              if (reflection) {
+                // Store the reflection as a new semantic memory
+                await supabase.from("agent_memory").insert({
+                  agent_id: agentId,
+                  content: `[Reflection on "${topic}"] ${reflection}`,
+                  memory_type: "reflection",
+                  memory_category: "semantic",
+                  importance: 0.8
+                });
+                
+                result = `[Memory Reflection on "${topic}"]\n\nBased on ${memories.length} memories:\n\n${reflection}\n\n(This reflection has been stored as a semantic memory)`;
+                break;
+              }
+            }
+          } catch (err) {
+            console.error("Reflection error:", err);
+          }
+        }
+        
+        // Fallback: just list the memories without AI synthesis
+        result = `[Memories about "${topic}" for reflection]\n\n` +
+          memories.map((m, i) => `${i + 1}. [${m.memory_category}] ${m.content}`).join("\n\n");
+        break;
+      }
+      
+      case "memory_forget": {
+        const memoryId = toolInput.memory_id as string;
+        const reason = toolInput.reason as string;
+        
+        if (!memoryId) {
+          result = "Error: memory_id is required";
+          break;
+        }
+        
+        // Apply decay rather than hard delete
+        const { data: memory, error: fetchError } = await supabase
+          .from("agent_memory")
+          .select("content, decay_factor")
+          .eq("id", memoryId)
+          .eq("agent_id", agentId)
+          .single();
+        
+        if (fetchError || !memory) {
+          result = `Error: Memory not found (${memoryId})`;
+          break;
+        }
+        
+        const newDecay = Math.max(0, (memory.decay_factor || 1.0) - 0.5);
+        
+        const { error: updateError } = await supabase
+          .from("agent_memory")
+          .update({ 
+            decay_factor: newDecay,
+            importance: newDecay < 0.2 ? 0 : undefined
+          })
+          .eq("id", memoryId);
+        
+        if (updateError) {
+          result = `Error updating memory: ${updateError.message}`;
+        } else if (newDecay < 0.2) {
+          // Memory is effectively forgotten
+          await supabase.from("agent_memory").delete().eq("id", memoryId);
+          result = `[Memory Forgotten]\nMemory "${memory.content.substring(0, 50)}..." has been removed.\nReason: ${reason || "Not specified"}`;
+        } else {
+          result = `[Memory Decayed]\nMemory "${memory.content.substring(0, 50)}..." decay factor reduced to ${newDecay.toFixed(2)}.\nReason: ${reason || "Not specified"}\n\nAnother forget call will remove it completely.`;
+        }
+        break;
+      }
+      
+      case "memory_consolidate": {
+        const memoryIds = toolInput.memory_ids as string[];
+        const summary = toolInput.summary as string;
+        
+        if (!memoryIds || memoryIds.length < 2) {
+          result = "Error: At least 2 memory_ids are required for consolidation";
+          break;
+        }
+        
+        // Fetch the memories to consolidate
+        const { data: memories, error: fetchError } = await supabase
+          .from("agent_memory")
+          .select("id, content, importance, memory_category")
+          .in("id", memoryIds)
+          .eq("agent_id", agentId);
+        
+        if (fetchError || !memories || memories.length < 2) {
+          result = `Error: Could not find memories to consolidate`;
+          break;
+        }
+        
+        let consolidatedContent = summary;
+        
+        // If no summary provided, use AI to generate one
+        if (!consolidatedContent) {
+          const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+          
+          if (LOVABLE_API_KEY) {
+            try {
+              const memoryTexts = memories.map(m => m.content).join("\n---\n");
+              
+              const consolidateResponse = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${LOVABLE_API_KEY}`,
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  model: "google/gemini-2.5-flash",
+                  messages: [
+                    {
+                      role: "system",
+                      content: "You consolidate related memories into a single coherent summary. Be concise but preserve important details."
+                    },
+                    {
+                      role: "user",
+                      content: `Consolidate these ${memories.length} related memories into one:\n\n${memoryTexts}`
+                    }
+                  ]
+                })
+              });
+              
+              if (consolidateResponse.ok) {
+                const consolidateData = await consolidateResponse.json();
+                consolidatedContent = consolidateData.choices?.[0]?.message?.content;
+              }
+            } catch (err) {
+              console.error("Consolidation AI error:", err);
+            }
+          }
+          
+          // Fallback: simple concatenation
+          if (!consolidatedContent) {
+            consolidatedContent = `[Consolidated] ${memories.map(m => m.content).join(" | ")}`;
+          }
+        }
+        
+        // Calculate new importance (max of all + bonus)
+        const maxImportance = Math.min(1.0, Math.max(...memories.map(m => m.importance || 0.5)) + 0.1);
+        const dominantCategory = memories[0].memory_category || "semantic";
+        
+        // Create consolidated memory
+        const { data: newMemory, error: insertError } = await supabase
+          .from("agent_memory")
+          .insert({
+            agent_id: agentId,
+            content: consolidatedContent,
+            memory_type: "consolidated",
+            memory_category: dominantCategory,
+            importance: maxImportance
+          })
+          .select()
+          .single();
+        
+        if (insertError) {
+          result = `Error creating consolidated memory: ${insertError.message}`;
+          break;
+        }
+        
+        // Remove old memories
+        await supabase.from("agent_memory").delete().in("id", memoryIds);
+        
+        result = `[Memories Consolidated]\n${memories.length} memories merged into:\n\n"${consolidatedContent.substring(0, 200)}${consolidatedContent.length > 200 ? '...' : ''}"\n\nNew memory ID: ${newMemory.id}\nImportance: ${maxImportance}`;
+        break;
+      }
+
       default:
-        result = `Unknown tool: ${toolName}. Available tools: web_search, fetch_url, get_datetime, calculator, memory_store, memory_recall, create_task, decompose_task, list_tasks, get_task, update_task, get_next_task`;
+        result = `Unknown tool: ${toolName}. Available tools: web_search, fetch_url, get_datetime, calculator, memory_store, memory_recall, memory_search, memory_reflect, memory_forget, memory_consolidate, create_task, decompose_task, list_tasks, get_task, update_task, get_next_task`;
     }
 
     console.log(`Tool ${toolName} result:`, result.substring(0, 200));
