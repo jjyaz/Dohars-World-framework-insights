@@ -30,7 +30,12 @@ export function AgentSelector({ onSelect, onClose }: AgentSelectorProps) {
       if (error) {
         console.error("Failed to fetch agents:", error);
       } else {
-        setAgents(data || []);
+        // Custom sort: swap Diyar and Dohar positions
+        const sortedAgents = (data || []).sort((a, b) => {
+          const order: Record<string, number> = { 'Dehtyar': 0, 'Dehto': 1, 'Dohar': 2, 'Diyar': 3 };
+          return (order[a.name] ?? 99) - (order[b.name] ?? 99);
+        });
+        setAgents(sortedAgents);
       }
       setIsLoading(false);
     }
