@@ -5,6 +5,8 @@ import doharAvatar from "@/assets/dohar.png";
 import doharChatAvatar from "@/assets/dohar-chat.png";
 import diyarAvatar from "@/assets/diyar.png";
 import diyarChatAvatar from "@/assets/diyar-chat.png";
+import dehtoAvatar from "@/assets/dehto.png";
+import dehtoChatAvatar from "@/assets/dehto-chat.png";
 
 // Map agent names to their avatar imports
 const avatarMap: Record<string, { avatar: string; chatAvatar: string }> = {
@@ -19,6 +21,10 @@ const avatarMap: Record<string, { avatar: string; chatAvatar: string }> = {
   diyar: {
     avatar: diyarAvatar,
     chatAvatar: diyarChatAvatar,
+  },
+  dehto: {
+    avatar: dehtoAvatar,
+    chatAvatar: dehtoChatAvatar,
   },
 };
 
