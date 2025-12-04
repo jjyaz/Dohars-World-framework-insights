@@ -367,7 +367,15 @@ serve(async (req) => {
     const { data: tools } = await supabase.from("agent_tools").select("name, description, parameters");
 
     const toolsContext = tools && tools.length > 0
-      ? "\n\n[AVAILABLE TOOLS]\n" + tools.map((t) => `- ${t.name}: ${t.description}`).join("\n")
+      ? "\n\n[AVAILABLE TOOLS]\n" + tools.map((t) => {
+          const params = t.parameters as { properties?: Record<string, { type: string; description?: string }>, required?: string[] };
+          const paramList = params?.properties 
+            ? Object.entries(params.properties)
+                .map(([k, v]) => `${k} (${v.type}${params?.required?.includes(k) ? ', required' : ''}): ${v.description || ''}`)
+                .join(', ')
+            : 'none';
+          return `- ${t.name}: ${t.description}\n  Parameters: {${paramList}}`;
+        }).join("\n")
       : "";
 
     // Council-specific instructions for Dehtyar
