@@ -7,7 +7,7 @@ import { PixelButton } from "@/components/PixelButton";
 import { AgentChat } from "@/components/AgentChat";
 import { AgentSelector, Agent } from "@/components/AgentSelector";
 import { DocumentationScroll } from "@/components/DocumentationScroll";
-import { Brain, Users, MessageSquare, ScrollText, Wrench, Eye, ChevronDown } from "lucide-react";
+import { Brain, Users, MessageSquare, ScrollText, Wrench, Eye, ChevronDown, Github } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -173,6 +173,16 @@ const Index = () => {
   return (
     <div className="min-h-screen parchment-texture relative overflow-hidden">
       <Sparkles />
+
+      {/* GitHub Link - Top Left */}
+      <a
+        href="https://github.com/jjyaz/Dehtyar-framework-insights"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute top-4 left-4 z-50 p-2 bg-background/90 border-2 border-primary/50 rounded hover:border-primary hover:text-primary transition-colors"
+      >
+        <Github className="w-5 h-5" />
+      </a>
 
       {/* CA Dropdown - Top Right */}
       <div className="absolute top-4 right-4 z-50">
