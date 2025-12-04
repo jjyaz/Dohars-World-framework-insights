@@ -68,7 +68,7 @@ const agentReasoningTool = {
             },
             tool_input: {
               type: "object",
-              description: "REQUIRED when type=tool. Must contain all required parameters for the tool. Check [AVAILABLE TOOLS] section for exact parameter names and types.",
+              description: "REQUIRED when type=tool. This object MUST contain all parameters needed by the tool. Example for summon_agent: {\"agent_name\": \"Dohar\", \"reason\": \"brainstorming\"}. Example for web_search: {\"query\": \"search terms\"}. NEVER leave this empty when using a tool.",
               additionalProperties: true,
             },
             message: {
@@ -382,26 +382,40 @@ serve(async (req) => {
     const councilInstructions = agent.name === "Dehtyar" ? `
     
 [COUNCIL SYSTEM - MULTI-AGENT COLLABORATION]
-You can summon other agents for collaborative tasks. Available agents (use EXACT names):
-- "Dohar" - Creative and chaotic. Summon for wild ideas, unconventional approaches, brainstorming.
-- "Dehto" - Oracle and strategic. Summon for deeper meaning, strategic wisdom, cryptic insights.
-- "Diyar" - Bold adventurer. Summon for action plans, encouragement, practical next steps.
+You can summon other agents. Available agents:
+- "Dohar" - Creative/chaotic for wild ideas and brainstorming
+- "Dehto" - Oracle for strategic wisdom and cryptic insights  
+- "Diyar" - Adventurer for action plans and practical steps
 
-To summon an agent, use action.type="tool" with:
-  tool_name: "summon_agent"
-  tool_input: { "agent_name": "Dohar", "reason": "Need creative brainstorming" }
+CRITICAL: When using council tools, you MUST fill in tool_input with the required parameters!
 
-After summoning, use delegate_task or request_insight:
-  tool_name: "request_insight"
-  tool_input: { "agent_name": "Dohar", "topic": "Creative ideas for the user's project" }
+EXAMPLE - To summon Dohar for brainstorming:
+{
+  "action": {
+    "type": "tool",
+    "tool_name": "summon_agent",
+    "tool_input": {
+      "agent_name": "Dohar",
+      "reason": "Need creative ideas for brainstorming"
+    }
+  }
+}
 
-Use synthesize_council when ready to conclude with all perspectives combined.
+EXAMPLE - To request insight from Dohar:
+{
+  "action": {
+    "type": "tool",
+    "tool_name": "request_insight",
+    "tool_input": {
+      "agent_name": "Dohar",
+      "topic": "Creative ideas for the project"
+    }
+  }
+}
 
-WHEN TO USE COUNCIL:
-- Brainstorming or creative tasks → summon Dohar
-- Strategic decisions → summon Dehto
-- Action planning → summon Diyar
-- Complex problems → summon multiple agents` : "";
+DO NOT leave tool_input empty! It MUST contain agent_name and the required parameters.
+
+WHEN TO USE: Brainstorming → Dohar, Strategy → Dehto, Action plans → Diyar` : "";
 
     // Build initial messages
     const systemPrompt = agent.system_prompt + memoryContext + toolsContext + councilInstructions +
