@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
-import dehtyarImage from "@/assets/dehtyar.png";
+import doharImage from "@/assets/dehtyar.png";
 
-interface DehtyarCharacterProps {
+interface DoharCharacterProps {
   showSpeech?: boolean;
   speechText?: string;
 }
 
-export const DehtyarCharacter = ({ showSpeech = true, speechText }: DehtyarCharacterProps) => {
+export const DoharCharacter = ({ showSpeech = true, speechText }: DoharCharacterProps) => {
   const [isBlinking, setIsBlinking] = useState(false);
 
   useEffect(() => {
@@ -41,8 +41,8 @@ export const DehtyarCharacter = ({ showSpeech = true, speechText }: DehtyarChara
       {/* Character */}
       <div className={`animate-float ${isBlinking ? 'opacity-90' : 'opacity-100'}`}>
         <img
-          src={dehtyarImage}
-          alt="Dehtyar - Your autonomous AI companion"
+          src={doharImage}
+          alt="Dohar - Your autonomous AI companion"
           className="w-48 h-48 md:w-64 md:h-64 object-contain glow-pink animate-pulse-glow image-pixelated"
           style={{ imageRendering: 'pixelated' }}
         />
