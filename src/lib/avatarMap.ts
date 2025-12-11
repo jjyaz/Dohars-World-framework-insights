@@ -10,11 +10,11 @@ import dehtoChatAvatar from "@/assets/dehto-chat.png";
 
 // Map agent names to their avatar imports
 const avatarMap: Record<string, { avatar: string; chatAvatar: string }> = {
-  dehtyar: {
+  dohar: {
     avatar: dehtyarAvatar,
     chatAvatar: dehtyarChatAvatar,
   },
-  dohar: {
+  dehtyar: {
     avatar: doharChatAvatar,
     chatAvatar: doharAvatar,
   },

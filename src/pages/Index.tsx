@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { DehtyarCharacter } from "@/components/DehtyarCharacter";
+import { DoharCharacter } from "@/components/DoharCharacter";
 import { FeatureStation } from "@/components/FeatureStation";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Sparkles } from "@/components/Sparkles";
@@ -16,12 +16,12 @@ const Index = () => {
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null);
   const [caDropdownOpen, setCaDropdownOpen] = useState(false);
 
-  const openDehtyarChat = useCallback(async () => {
-    // Fetch Dehtyar directly and open chat
+  const openDoharChat = useCallback(async () => {
+    // Fetch Dohar directly and open chat
     const { data } = await supabase
       .from("agents")
       .select("id, name, role, avatar_url, chat_avatar_url")
-      .eq("name", "Dehtyar")
+      .eq("name", "Dohar")
       .single();
     
     if (data) {
@@ -225,7 +225,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto text-center">
           {/* Title */}
           <h1 className="font-pixel text-2xl md:text-4xl text-ink mb-4 animate-fade-up">
-            DEHTYAR
+            DOHAR
           </h1>
           <p className="font-pixel text-[10px] md:text-xs text-primary mb-8 animate-fade-up text-glow-pink"
              style={{ animationDelay: "0.1s" }}>
@@ -234,7 +234,7 @@ const Index = () => {
 
           {/* Character */}
           <div className="flex justify-center mb-8 animate-fade-up" style={{ animationDelay: "0.2s" }}>
-            <DehtyarCharacter />
+            <DoharCharacter />
           </div>
 
           {/* Tagline */}
@@ -252,7 +252,7 @@ const Index = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-up"
             style={{ animationDelay: "0.4s" }}
           >
-            <PixelButton variant="primary" onClick={openDehtyarChat}>Meet Dehtyar</PixelButton>
+            <PixelButton variant="primary" onClick={openDoharChat}>Meet Dohar</PixelButton>
             <PixelButton variant="secondary" onClick={scrollToFeatures}>Explore Features</PixelButton>
             <PixelButton variant="ghost" onClick={openAgentSelector}>Deploy Agent</PixelButton>
           </div>
@@ -315,10 +315,10 @@ const Index = () => {
           </h2>
           <p className="font-medieval text-xl md:text-2xl text-muted-foreground mb-8">
             The framework awaits. Deploy your first autonomous agent
-            and let Dehtyar guide you through the realm of AI.
+            and let Dohar guide you through the realm of AI.
           </p>
-          <PixelButton variant="primary" className="text-sm md:text-base px-8 py-4" onClick={openDehtyarChat}>
-            Summon Dehtyar
+          <PixelButton variant="primary" className="text-sm md:text-base px-8 py-4" onClick={openDoharChat}>
+            Summon Dohar
           </PixelButton>
         </div>
       </section>
@@ -327,7 +327,7 @@ const Index = () => {
       <footer className="py-8 px-6 border-t border-border">
         <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="font-pixel text-[8px] text-muted-foreground">
-            DEHTYAR FRAMEWORK © 2025
+            DOHAR FRAMEWORK © 2025
           </p>
           <div className="flex gap-6">
             <button onClick={() => setShowDocs(true)} className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
