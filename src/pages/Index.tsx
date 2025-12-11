@@ -179,7 +179,7 @@ const Index = () => {
       {/* Social Links - Top Left */}
       <div className="absolute top-4 left-4 z-50 flex gap-2">
         <a
-          href="https://github.com/jjyaz/Dehtyar-framework-insights"
+          href="https://github.com/jjyaz/Dohars-World-framework-insights"
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 bg-background/90 border-2 border-primary/50 rounded hover:border-primary hover:text-primary transition-colors"
@@ -335,7 +335,7 @@ const Index = () => {
             <button onClick={() => setShowDocs(true)} className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
               Documentation
             </button>
-            <a href="https://github.com/jjyaz/Dehtyar-framework-insights" target="_blank" rel="noopener noreferrer" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://github.com/jjyaz/Dohars-World-framework-insights" target="_blank" rel="noopener noreferrer" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
               GitHub
             </a>
             <a href="#" className="font-medieval text-lg text-muted-foreground hover:text-primary transition-colors">
