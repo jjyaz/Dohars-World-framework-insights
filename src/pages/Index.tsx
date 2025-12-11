@@ -3,6 +3,7 @@ import { DoharCharacter } from "@/components/DoharCharacter";
 import { FeatureStation } from "@/components/FeatureStation";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { Sparkles } from "@/components/Sparkles";
+import { PixelClouds } from "@/components/PixelClouds";
 import { PixelButton } from "@/components/PixelButton";
 import { AgentChat } from "@/components/AgentChat";
 import { AgentSelector, Agent } from "@/components/AgentSelector";
@@ -172,6 +173,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen parchment-texture relative overflow-hidden">
+      <PixelClouds />
       <Sparkles />
 
       {/* Social Links - Top Left */}

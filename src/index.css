@@ -4,102 +4,108 @@
 
 @layer base {
   :root {
-    /* Parchment & Medieval Theme */
-    --background: 35 30% 88%;
-    --foreground: 25 35% 15%;
+    /* Sky Blue Theme */
+    --background: 200 70% 75%;
+    --foreground: 210 50% 15%;
 
-    --card: 35 35% 82%;
-    --card-foreground: 25 35% 15%;
+    --card: 200 60% 85%;
+    --card-foreground: 210 50% 15%;
 
-    --popover: 35 30% 85%;
-    --popover-foreground: 25 35% 15%;
+    --popover: 200 65% 88%;
+    --popover-foreground: 210 50% 15%;
 
-    /* Hot pink accent from Dehtyar */
+    /* Hot pink accent */
     --primary: 340 85% 60%;
-    --primary-foreground: 35 30% 95%;
+    --primary-foreground: 0 0% 100%;
 
-    /* Darker parchment for secondary */
-    --secondary: 30 25% 70%;
-    --secondary-foreground: 25 35% 15%;
+    /* Light cloud secondary */
+    --secondary: 200 40% 90%;
+    --secondary-foreground: 210 50% 15%;
 
-    --muted: 30 20% 75%;
-    --muted-foreground: 25 20% 40%;
+    --muted: 200 30% 85%;
+    --muted-foreground: 210 30% 35%;
 
     /* Pink glow accent */
     --accent: 340 75% 65%;
-    --accent-foreground: 35 30% 95%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
-    --destructive-foreground: 35 30% 95%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Parchment borders */
-    --border: 30 25% 60%;
-    --input: 30 25% 65%;
+    /* Sky borders */
+    --border: 200 40% 65%;
+    --input: 200 40% 70%;
     --ring: 340 85% 60%;
 
     --radius: 0.25rem;
 
-    /* Custom medieval colors */
-    --parchment-light: 35 35% 92%;
-    --parchment: 35 30% 85%;
-    --parchment-dark: 30 25% 70%;
-    --ink: 25 40% 12%;
+    /* Custom sky colors */
+    --parchment-light: 200 60% 92%;
+    --parchment: 200 55% 85%;
+    --parchment-dark: 200 45% 75%;
+    --ink: 210 50% 15%;
     --gold: 45 80% 50%;
     --pink-glow: 340 85% 60%;
     --pink-soft: 340 60% 75%;
+    --sky-light: 200 80% 88%;
+    --sky: 200 70% 75%;
+    --sky-dark: 200 60% 60%;
 
-    --sidebar-background: 30 25% 80%;
-    --sidebar-foreground: 25 35% 15%;
+    --sidebar-background: 200 50% 85%;
+    --sidebar-foreground: 210 50% 15%;
     --sidebar-primary: 340 85% 60%;
-    --sidebar-primary-foreground: 35 30% 95%;
-    --sidebar-accent: 30 20% 75%;
-    --sidebar-accent-foreground: 25 35% 15%;
-    --sidebar-border: 30 25% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 200 40% 80%;
+    --sidebar-accent-foreground: 210 50% 15%;
+    --sidebar-border: 200 40% 65%;
     --sidebar-ring: 340 85% 60%;
   }
 
   .dark {
-    /* Dark parchment theme */
-    --background: 25 30% 10%;
-    --foreground: 35 25% 85%;
+    /* Dark sky theme */
+    --background: 210 50% 12%;
+    --foreground: 200 30% 90%;
 
-    --card: 25 25% 15%;
-    --card-foreground: 35 25% 85%;
+    --card: 210 45% 18%;
+    --card-foreground: 200 30% 90%;
 
-    --popover: 25 25% 12%;
-    --popover-foreground: 35 25% 85%;
+    --popover: 210 45% 15%;
+    --popover-foreground: 200 30% 90%;
 
     --primary: 340 85% 60%;
-    --primary-foreground: 25 30% 10%;
+    --primary-foreground: 210 50% 10%;
 
-    --secondary: 25 20% 20%;
-    --secondary-foreground: 35 25% 85%;
+    --secondary: 210 35% 22%;
+    --secondary-foreground: 200 30% 90%;
 
-    --muted: 25 20% 18%;
-    --muted-foreground: 35 15% 55%;
+    --muted: 210 30% 20%;
+    --muted-foreground: 200 20% 60%;
 
     --accent: 340 75% 55%;
-    --accent-foreground: 25 30% 10%;
+    --accent-foreground: 210 50% 10%;
 
     --destructive: 0 65% 45%;
-    --destructive-foreground: 35 25% 90%;
+    --destructive-foreground: 200 30% 95%;
 
-    --border: 25 20% 25%;
-    --input: 25 20% 22%;
+    --border: 210 30% 28%;
+    --input: 210 30% 25%;
     --ring: 340 85% 60%;
 
-    --parchment-light: 25 25% 18%;
-    --parchment: 25 25% 14%;
-    --parchment-dark: 25 20% 10%;
-    --ink: 35 25% 90%;
+    --parchment-light: 210 40% 20%;
+    --parchment: 210 40% 16%;
+    --parchment-dark: 210 35% 12%;
+    --ink: 200 30% 92%;
+    --sky-light: 210 45% 25%;
+    --sky: 210 50% 18%;
+    --sky-dark: 210 55% 10%;
 
-    --sidebar-background: 25 25% 12%;
-    --sidebar-foreground: 35 25% 85%;
+    --sidebar-background: 210 45% 14%;
+    --sidebar-foreground: 200 30% 90%;
     --sidebar-primary: 340 85% 60%;
-    --sidebar-primary-foreground: 25 30% 10%;
-    --sidebar-accent: 25 20% 20%;
-    --sidebar-accent-foreground: 35 25% 85%;
-    --sidebar-border: 25 20% 25%;
+    --sidebar-primary-foreground: 210 50% 10%;
+    --sidebar-accent: 210 35% 22%;
+    --sidebar-accent-foreground: 200 30% 90%;
+    --sidebar-border: 210 30% 28%;
     --sidebar-ring: 340 85% 60%;
   }
 }
@@ -137,10 +143,10 @@
   .parchment-texture {
     background: 
       linear-gradient(180deg, 
-        hsl(var(--parchment-light)) 0%, 
-        hsl(var(--parchment)) 20%,
-        hsl(var(--parchment)) 80%,
-        hsl(var(--parchment-dark)) 100%
+        hsl(var(--sky-light)) 0%, 
+        hsl(var(--background)) 30%,
+        hsl(var(--background)) 70%,
+        hsl(var(--sky-dark)) 100%
       );
     background-size: 100% 100%;
     position: relative;
@@ -150,8 +156,7 @@
     content: '';
     position: absolute;
     inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    opacity: 0.08;
+    opacity: 0;
     pointer-events: none;
   }
 
