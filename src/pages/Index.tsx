@@ -187,7 +187,7 @@ const Index = () => {
           <Github className="w-5 h-5" />
         </a>
         <a
-          href="https://x.com/DehtyarAGI"
+          href="https://x.com/DoharsWorld"
           target="_blank"
           rel="noopener noreferrer"
           className="p-2 bg-background/90 border-2 border-primary/50 rounded hover:border-primary hover:text-primary transition-colors"
